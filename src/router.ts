@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import { domains } from './controllers/etape_1'
+import { getDomains } from './controllers/etape_1'
 
 export default function(router: Router){
 
-	router.get('/domains.json', domains)
+	router.get('/domains.json', getDomains)
 
 	router.get('/domains.*', function(req, res){
 		res.status(400).json({
@@ -15,6 +15,7 @@ export default function(router: Router){
 
 	router.get('*', function(req, res){
 		res.status(404).json({
+			"code": 404,
 			"message": "not found"
 		})
 	})
