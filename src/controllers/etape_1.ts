@@ -1,5 +1,5 @@
-import {db} from '../config'
-import {Connection, createConnection} from 'mysql'
+import { db } from '../config'
+import { Connection, createConnection } from 'mysql'
 
 let con = createConnection({
 	host: db,
@@ -9,17 +9,17 @@ let con = createConnection({
 })
 
 export let getDomains = (req, res, next) => {
-	con.connect(function(err) {
-		if (err) res.status(500).json({ "message": "db connexion error." })
+	con.query("SELECT id, slug, name, description FROM domain", function (err, domains) {
+		if (err) {
+			res.status(500).json({ "message": "db request error." })
+			return
+		}
 
-		con.query("SELECT * FROM domain", function (err, result) {
-			if (err) res.status(500).json({ "message": "db request error." })
-
-			res.status(200).json({
-				code: 200,
-				message: "success",
-				datas: result
-			})
+		res.status(200).json({
+			code: 200,
+			message: "success",
+			datas: domains
 		})
 	})
 }
+
