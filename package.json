@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+		"compile": "node_modules/.bin/tsc",
     "tsc": "node_modules/.bin/tsc -w",
     "watch": "nodemon dist/index.js",
     "start": "node_modules/.bin/concurrently \"npm run tsc\" \"npm run watch\" "
