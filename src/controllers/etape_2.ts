@@ -18,12 +18,14 @@ export let getDomain = (req, res, next) => {
 		}
 
 		domain = domain[0]
-		if (!domain)
+		if (!domain){
 			res.status(400).json({
 				code: 400,
 				message: "parametre introuvable.",
 				datas: []
 			})
+			return
+		}
 
 		query = "SELECT lang_id FROM domain_lang WHERE domain_id = '" + domain.id + "'"
 		con.query(query, function (err, langs) {
@@ -41,7 +43,7 @@ export let getDomain = (req, res, next) => {
 					return
 				}
 
-				domain.langs = langs.map(function (item) { return item.lang_id; });
+				domain.langs = langs.map(function (item) { return item.lang_id })
 				domain.creator = user[0]
 				delete domain.user_id
 				res.status(200).json({

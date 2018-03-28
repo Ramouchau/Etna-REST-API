@@ -28,8 +28,15 @@ class App {
   private routes(): void {
     let router = routerInit(express.Router())
     // placeholder route handler
+		this.express.use('/api', router)
 
-    this.express.use('/', router)
+		this.express.get('/*', function (req, res) {
+			res.status(404).json({
+				"code": 404,
+				"message": "not found"
+			})
+		})
+
   }
 
 }

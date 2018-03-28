@@ -3,7 +3,6 @@ import { getDomains } from './controllers/etape_1'
 import { getDomain } from './controllers/etape_2'
 
 export default function (router: Router) {
-
 	router.get('/domains.json', getDomains)
 
 	router.get('/domains/:param\.json', getDomain)
@@ -21,13 +20,6 @@ export default function (router: Router) {
 			"code": 400,
 			"message": "error",
 			"datas": []
-		})
-	})
-
-	router.get('*', function (req, res) {
-		res.status(404).json({
-			"code": 404,
-			"message": "not found"
 		})
 	})
 
