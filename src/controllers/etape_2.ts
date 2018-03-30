@@ -20,7 +20,7 @@ export let getDomain = (req, res, next) => {
 		domain = domain[0]
 		if (!domain){
 			res.status(400).json({
-				code: 400,
+				code: 404,
 				message: "parametre introuvable.",
 				datas: []
 			})
