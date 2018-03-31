@@ -7,3 +7,54 @@ let con = createConnection({
 	password: "",
 	database: "tic_rest"
 })
+
+export let getTranslations = (req, res, next) => {
+	let query = "SELECT id 	FROM domain WHERE name = '" + req.params.domain + "' LIMIT 1"
+	con.query(query, function (err, domain) {
+		if (err) {
+			console.log(err)
+			res.status(500).json({ "message": "db request error." })
+			return
+		}
+
+		domain = domain[0]
+		if (!domain) {
+			res.status(404).json({
+				code: 404,
+				message: "domain introuvable."
+			})
+			return
+		}
+
+		query = "SELECT id, lang_id, `code`, trans from translation LEFT OUTER JOIN translation_to_lang ON translation.domain_id = '" + domain.id + "' && translation.id = translation_to_lang.translation_id "
+		con.query(query, function (err, translations) {
+			if (err) {
+				console.log(err)
+				res.status(500).json({ "message": "db request error." })
+				return
+			}
+
+			let result = new Array<any>()
+			let i = 0
+			for (let key in translations) {
+				if (!result.some(el => el.id == translations[key].id)) {
+					let trans = translations[key].trans
+					result[i] = translations[key]
+					result[i].trans = {}
+					result[i].trans[translations[key].lang_id] = trans
+					i++
+				}
+				else{
+					let curr = result.findIndex(el => el.id == translations[key].id)
+					console.log(curr)
+					result[curr].trans[translations[key].lang_id] = translations[key].trans
+				}
+			}
+			res.status(200).json({
+				code: 200,
+				message: "success",
+				datas: result
+			})
+		})
+	})
+}
