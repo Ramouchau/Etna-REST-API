@@ -18,6 +18,8 @@ export default function (router: Router) {
 
 	router.get('/domains/:domain/translations.json', getTranslations)
 
+	// router.post('/domains/:domain/translations.json', getTranslations)
+
 	router.get('/domains.*', err400)
 
 	router.get('/domains/:param\.*', err400)

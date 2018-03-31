@@ -43,6 +43,7 @@ export let getTranslations = (req, res, next) => {
 					result[i].trans = {}
 					result[i].trans[translations[key].lang_id] = trans
 					result[i].trans.PL = translations[key].code
+					delete result[i].lang_id
 					i++
 				}
 				else{
