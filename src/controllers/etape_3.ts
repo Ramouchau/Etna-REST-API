@@ -26,7 +26,7 @@ export let getTranslations = (req, res, next) => {
 			return
 		}
 
-		query = "SELECT id, lang_id, `code`, trans from translation LEFT OUTER JOIN translation_to_lang ON translation.domain_id = '" + domain.id + "' && translation.id = translation_to_lang.translation_id "
+		query = "SELECT id, lang_id, `code`, trans from translation LEFT OUTER JOIN translation_to_lang ON translation.id = translation_to_lang.translation_id WHERE translation.domain_id = '" + domain.id + "' "
 		con.query(query, function (err, translations) {
 			if (err) {
 				console.log(err)
@@ -42,6 +42,7 @@ export let getTranslations = (req, res, next) => {
 					result[i] = translations[key]
 					result[i].trans = {}
 					result[i].trans[translations[key].lang_id] = trans
+					result[i].trans.PL = translations[key].code
 					i++
 				}
 				else{
