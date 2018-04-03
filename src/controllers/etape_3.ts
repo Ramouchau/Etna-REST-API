@@ -61,6 +61,15 @@ export let getTranslations = (req, res, next) => {
 						result[curr].trans[translations[key].lang_id] = translations[key].trans
 					}
 				}
+
+				if(req.query.code){
+					result.forEach((item, index, object) => {
+						if (!item.code.includes(req.query.code)) {
+							object.splice(index);
+						}
+					});
+				}
+
 				res.status(200).json({
 					code: 200,
 					message: "success",
