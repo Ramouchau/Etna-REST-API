@@ -34,7 +34,7 @@ export let getDomain = (req, res, next) => {
 				return
 			}
 
-			query = "SELECT id, username FROM user WHERE id = '" + domain.user_id + "'"
+			query = "SELECT * FROM user WHERE id = '" + domain.user_id + "'"
 			con.query(query, function (err, user) {
 				if (err) {
 					console.log(err)
@@ -44,7 +44,10 @@ export let getDomain = (req, res, next) => {
 
 				domain.langs = langs.map(function (item) { return item.lang_id })
 				domain.creator = user[0]
+				if (!req.headers.authorization || domain.creator.password != req.headers.authorization)
+					delete domain.creator.email
 				delete domain.user_id
+				delete domain.creator.password
 				res.status(200).json({
 					code: 200,
 					message: "success",
