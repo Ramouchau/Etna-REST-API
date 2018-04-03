@@ -105,6 +105,7 @@ export let postTranslation = (req, res, next) => {
 
 						res.status(201).json({
 							code: 201,
+							message: "success",
 							datas: {
 								code: req.body.code,
 								trans: req.body.trans,

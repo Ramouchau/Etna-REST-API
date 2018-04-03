@@ -89,11 +89,50 @@ export let putTranslation = (req, res, next) => {
 					}
 
 					var validLang = false
+					let langs = {}
 					lang.forEach(element => {
-						if (req.body.trans[element.lang_id]){
-
-						}
+						if (req.body.trans[element.lang_id])
+							validLang = element.lang_id
+						langs[element.lang_id] = translation[0].code
 					});
+
+					if (!validLang) {
+						res.status(400).json({
+							code: 400,
+							message: "le domain ne comptien pas cette langue",
+							datas: []
+						})
+						return
+					}
+
+					let trans = [[translation[0].id, validLang, req.body.trans[validLang]]]
+					query = `INSERT INTO translation_to_lang (translation_id, lang_id, trans)
+					VALUES ? ON DUPLICATE KEY UPDATE
+					lang_id = VALUES(lang_id),
+					trans = VALUES(trans)`
+					con.query(query, [trans], function (err, result) {
+						if (err) {
+							console.log(err)
+							res.status(500).json({ "message": "db request error." })
+							return
+						}
+
+						query = "SELECT * FROM translation_to_lang WHERE translation_id = '" + translation[0].id + "'"
+						con.query(query, function (err, transLangs) {
+							transLangs.forEach(element => {
+								langs[element.lang_id] = element.trans
+							});
+							res.status(200).json({
+								code: 200,
+								message: "success",
+								datas: {
+									code: translation[0].code,
+									id: translation,
+									trans: langs
+								}
+							})
+						})
+					})
 				})
 			})
 		})

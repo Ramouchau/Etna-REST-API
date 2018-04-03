@@ -22,7 +22,7 @@ export default function (router: Router) {
 
 	router.post('/domains/:domain/translations.json', postTranslation)
 
-	router.post('/domains/:domain/translations/:id.json', putTranslation)
+	router.put('/domains/:domain/translations/:id.json', putTranslation)
 
 	router.get('/domains.*', err400)
 
@@ -32,6 +32,6 @@ export default function (router: Router) {
 
 	router.post('/domains/:domain/translations.*', err400)
 
-	router.post('/domains/:domain/translations/id\.*', err400)
+	router.put('/domains/:domain/translations/id\.*', err400)
 	return router
 }
