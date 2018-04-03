@@ -127,7 +127,7 @@ export let putTranslation = (req, res, next) => {
 								message: "success",
 								datas: {
 									code: translation[0].code,
-									id: translation,
+									id: translation[0].id,
 									trans: langs
 								}
 							})
