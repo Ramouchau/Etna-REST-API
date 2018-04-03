@@ -18,7 +18,7 @@ export let getDomain = (req, res, next) => {
 		}
 
 		domain = domain[0]
-		if (!domain){
+		if (!domain) {
 			res.status(404).json({
 				code: 404,
 				message: "parametre introuvable."
@@ -43,11 +43,22 @@ export let getDomain = (req, res, next) => {
 				}
 
 				domain.langs = langs.map(function (item) { return item.lang_id })
-				domain.creator = user[0]
-				if (!req.headers.authorization || domain.creator.password != req.headers.authorization)
-					delete domain.creator.email
+				domain.creator = {
+					id: user[0].id,
+					username: user[0].username
+				}
+				if (req.headers.authorization){
+					if (user[0].password != req.headers.authorization){
+						res.status(403).json({
+							code: 403,
+							message: "Forbidden."
+						})
+						return
+					}
+					else
+						domain.creator.email = user[0].email
+				}
 				delete domain.user_id
-				delete domain.creator.password
 				res.status(200).json({
 					code: 200,
 					message: "success",
