@@ -57,7 +57,8 @@ export let postTranslation = (req, res, next) => {
 				if (req.headers['content-type'] != 'application/x-www-form-urlencoded') {
 					res.status(400).json({
 						code: 400,
-						message: "Content-type invalide."
+						message: "Content-type invalide.",
+						datas: []
 					})
 					return
 				}
@@ -65,7 +66,8 @@ export let postTranslation = (req, res, next) => {
 				if (!req.body.code || !req.body.trans) {
 					res.status(400).json({
 						code: 400,
-						message: "requete invalide."
+						message: "requete invalide.",
+						datas: []
 					})
 					return
 				}
@@ -79,7 +81,11 @@ export let postTranslation = (req, res, next) => {
 				con.query(query, function (err, translation) {
 					if (err) {
 						console.log(err)
-						res.status(400).json({code: 400, "message": "translation already exist" })
+						res.status(400).json({
+						code: 400,
+						"message": "translation already exist",
+						datas: []
+					})
 						return
 					}
 					let values = []

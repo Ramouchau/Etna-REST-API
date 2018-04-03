@@ -50,7 +50,7 @@ export let putTranslation = (req, res, next) => {
 				return
 			}
 
-			query = "SELECT id FROM user WHERE id = '" + domain.user_id + "' && password = '" + req.headers.authorization + "' LIMIT 1"
+			query = "SELECT * FROM user WHERE password = '" + req.headers.authorization + "' LIMIT 1"
 			con.query(query, function (err, user) {
 				if (!user[0]) {
 					res.status(401).json({
@@ -60,12 +60,21 @@ export let putTranslation = (req, res, next) => {
 					return
 				}
 
+				if ( domain.user_id != user[0].id){
+					res.status(403).json({
+						code: 403,
+						message: "Forbidden."
+					})
+					return
+				}
+
 				query = "SELECT lang_id FROM domain_lang WHERE domain_id = '" + domain.id + "'"
 				con.query(query, function (err, lang) {
 					if (req.headers['content-type'] != 'application/x-www-form-urlencoded') {
 						res.status(400).json({
 							code: 400,
-							message: "Content-type invalide."
+							message: "Content-type invalide.",
+							datas: []
 						})
 						return
 					}
@@ -73,10 +82,18 @@ export let putTranslation = (req, res, next) => {
 					if (!req.body.trans) {
 						res.status(400).json({
 							code: 400,
-							message: "requete invalide."
+							message: "requete invalide.",
+							datas: []
 						})
 						return
 					}
+
+					var validLang = false
+					lang.forEach(element => {
+						if (req.body.trans[element.lang_id]){
+
+						}
+					});
 				})
 			})
 		})
