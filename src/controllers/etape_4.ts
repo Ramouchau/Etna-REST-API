@@ -71,7 +71,7 @@ export let postTranslation = (req, res, next) => {
 				con.query(query, function (err, translation) {
 					if (err) {
 						console.log(err)
-						res.status(400).json({ "message": "translation already exist" })
+						res.status(400).json({code: 400, "message": "translation already exist" })
 						return
 					}
 					let values = []
