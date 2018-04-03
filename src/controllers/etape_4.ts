@@ -34,12 +34,20 @@ export let postTranslation = (req, res, next) => {
 			return
 		}
 
-		query = "SELECT id FROM user WHERE id = '" + domain.user_id + "' && password = '" + req.headers.authorization + "' LIMIT 1"
+		query = "SELECT * FROM user WHERE password = '" + req.headers.authorization + "' LIMIT 1"
 		con.query(query, function (err, user) {
 			if (!user[0]) {
 				res.status(401).json({
 					code: 401,
 					message: "authorisation invalide."
+				})
+				return
+			}
+
+			if ( domain.user_id != user[0].id){
+				res.status(403).json({
+					code: 403,
+					message: "Forbidden."
 				})
 				return
 			}

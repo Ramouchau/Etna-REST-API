@@ -30,7 +30,7 @@ class App {
     // placeholder route handler
 		this.express.use('/api', router)
 
-		this.express.get('/*', function (req, res) {
+		this.express.use('/*', function (req, res) {
 			res.status(404).json({
 				"code": 404,
 				"message": "not found"
