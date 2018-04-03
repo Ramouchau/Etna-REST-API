@@ -77,6 +77,15 @@ export let postTranslation = (req, res, next) => {
 						req.body.trans[element.lang_id] = req.body.code
 				});
 
+				if (Object.keys(req.body.trans).length > lang.length){
+					res.status(400).json({
+						code: 400,
+						message: "le domain ne comptien pas cette langue",
+						datas: []
+					})
+					return
+				}
+
 				query = "INSERT INTO translation (domain_id, code) VALUES ('" + user[0].id + "', '" + req.body.code + "')"
 				con.query(query, function (err, translation) {
 					if (err) {
