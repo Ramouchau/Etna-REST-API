@@ -55,7 +55,7 @@ export let postDomain = (req, res, next) => {
 					}
 				})
 				let created_at = new Date()
-				let dom = [[req.body.name, req.body.description, req.body.name, user[0].id, created_at]]
+				let dom = [[req.body.name, req.body.description, req.body.name.replace(/\ /g,'-'), user[0].id, created_at]]
 				query = "INSERT INTO domain (name, description, slug, user_id, created_at) VALUES ?"
 				con.query(query, [dom], function (err, newDomain) {
 					if (err) {
@@ -75,7 +75,7 @@ export let postDomain = (req, res, next) => {
 							datas: {
 								langs: req.body.lang,
 								id: newDomain.insertId,
-								slug: req.body.name,
+								slug: req.body.name.replace(/\ /g,'-'),
 								name: req.body.name,
 								description: req.body.description,
 								creator: {

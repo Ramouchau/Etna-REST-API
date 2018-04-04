@@ -6,6 +6,7 @@ import { postTranslation } from './controllers/etape_4'
 import { putTranslation } from './controllers/etape_5'
 import { deleteTranslation } from './controllers/etape_6'
 import { postDomain } from './controllers/etape_9'
+import { deleteDomainLang } from './controllers/etape_10'
 
 let err400 = (req, res) => {
 	res.status(400).json({
@@ -30,6 +31,8 @@ export default function (router: Router) {
 
 	router.delete('/domains/:domain/translations/:id.json', deleteTranslation)
 
+	router.delete('/domains/:domain/langs/:id.json', deleteDomainLang)
+
 	router.get('/domains.*', err400)
 
 	router.post('/domains.*', err400)
@@ -43,5 +46,7 @@ export default function (router: Router) {
 	router.put('/domains/:domain/translations/id\.*', err400)
 
 	router.delete('/domains/:domain/translations/id\.*', err400)
+
+	router.delete('/domains/:domain/langs/:id\.*', err400)
 	return router
 }
