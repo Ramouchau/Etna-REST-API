@@ -69,7 +69,7 @@ export let putTranslation = (req, res, next) => {
 				}
 
 				query = "SELECT lang_id FROM domain_lang WHERE domain_id = '" + domain.id + "'"
-				con.query(query, function (err, lang) {
+				con.query(query, function (err, langs) {
 					if (req.headers['content-type'] != 'application/x-www-form-urlencoded') {
 						res.status(400).json({
 							code: 400,
@@ -88,24 +88,18 @@ export let putTranslation = (req, res, next) => {
 						return
 					}
 
-					var validLang = false
-					let langs = {}
-					lang.forEach(element => {
-						if (req.body.trans[element.lang_id])
-							validLang = element.lang_id
-						langs[element.lang_id] = translation[0].code
-					});
-
-					if (!validLang) {
-						res.status(400).json({
-							code: 400,
-							message: "le domain ne comptien pas cette langue",
-							datas: []
-						})
-						return
+					let trans = []
+					for (let element in req.body.trans) {
+						if (!langs.some(function (el) { return el.lang_id === element })){
+							res.status(400).json({
+								code: 400,
+								message: "langue non existante"
+							})
+							return
+						}
+						trans.push([translation[0].id, element, req.body.trans[element]])
 					}
 
-					let trans = [[translation[0].id, validLang, req.body.trans[validLang]]]
 					query = `INSERT INTO translation_to_lang (translation_id, lang_id, trans)
 					VALUES ? ON DUPLICATE KEY UPDATE
 					lang_id = VALUES(lang_id),
@@ -119,8 +113,13 @@ export let putTranslation = (req, res, next) => {
 
 						query = "SELECT * FROM translation_to_lang WHERE translation_id = '" + translation[0].id + "'"
 						con.query(query, function (err, transLangs) {
+							let resLangs = {}
 							transLangs.forEach(element => {
-								langs[element.lang_id] = element.trans
+								resLangs[element.lang_id] = element.trans
+							});
+							langs.forEach(element => {
+								if (!resLangs[element.lang_id])
+								resLangs[element.lang_id] = translation[0].code
 							});
 							res.status(200).json({
 								code: 200,
@@ -128,7 +127,7 @@ export let putTranslation = (req, res, next) => {
 								datas: {
 									code: translation[0].code,
 									id: translation[0].id,
-									trans: langs
+									trans: resLangs
 								}
 							})
 						})
