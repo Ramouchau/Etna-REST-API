@@ -47,15 +47,7 @@ export let getDomain = (req, res, next) => {
 					id: user[0].id,
 					username: user[0].username
 				}
-				if (req.headers.authorization){
-					if (user[0].password != req.headers.authorization){
-						res.status(403).json({
-							code: 403,
-							message: "Forbidden."
-						})
-						return
-					}
-					else
+				if (req.headers.authorization && user[0].password == req.headers.authorization){
 						domain.creator.email = user[0].email
 				}
 				delete domain.user_id
