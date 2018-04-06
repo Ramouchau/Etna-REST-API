@@ -93,7 +93,8 @@ export let putTranslation = (req, res, next) => {
 						if (!langs.some(function (el) { return el.lang_id === element })){
 							res.status(400).json({
 								code: 400,
-								message: "langue non existante"
+								message: "langue non existante",
+								datas: []
 							})
 							return
 						}
