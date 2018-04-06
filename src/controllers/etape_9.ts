@@ -29,18 +29,16 @@ export let postDomain = (req, res, next) => {
 		if (!req.body || !req.body.name || !req.body.description || !req.body.lang) {
 			res.status(400).json({
 				code: 400,
-				message: "bad request"
+				message: "bad request",
+				datas: []
 			})
 			return
 		}
-		query = "SELECT *	FROM domain WHERE name = '" + req.body.name + "' LIMIT 1"
+		query = "SELECT *	FROM domain WHERE name = '" + req.body.name + "'"
 		con.query(query, function (err, domain) {
+			let slug = req.body.name.replace(/\ /g,'-')
 			if (domain[0]) {
-				res.status(400).json({
-					code: 400,
-					message: "domain already exist."
-				})
-				return
+				slug += domain.length
 			}
 
 			query = "SELECT *	FROM lang"
@@ -49,13 +47,14 @@ export let postDomain = (req, res, next) => {
 					if (!lang.some(function (el) { return el.code === element })) {
 						res.status(400).json({
 							code: 400,
-							message: "langue non existante"
+							message: "langue non existante",
+							datas: []
 						})
 						return
 					}
 				})
 				let created_at = new Date()
-				let dom = [[req.body.name, req.body.description, req.body.name.replace(/\ /g,'-'), user[0].id, created_at]]
+				let dom = [[req.body.name, req.body.description, slug, user[0].id, created_at]]
 				query = "INSERT INTO domain (name, description, slug, user_id, created_at) VALUES ?"
 				con.query(query, [dom], function (err, newDomain) {
 					if (err) {
@@ -75,7 +74,7 @@ export let postDomain = (req, res, next) => {
 							datas: {
 								langs: req.body.lang,
 								id: newDomain.insertId,
-								slug: req.body.name.replace(/\ /g,'-'),
+								slug: slug,
 								name: req.body.name,
 								description: req.body.description,
 								creator: {
